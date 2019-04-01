@@ -1,0 +1,12 @@
+{
+  "name": "short-site",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {},
+  "scripts": {
+    "run:app": "cd packages/app && yarn start",
+    "run:scrape": "cd packages/utils && yarn scrape",
+    "run:data": "cd packages/utils && yarn data",
+    "setup": "cd packages/app && yarn install"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "short-site-utils",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "node-fetch": "^2.3.0",
+    "node-html-parser": "^1.1.13"
+  },
+  "scripts": {
+    "scrape": "node --experimental-modules src/bin/scrape.mjs",
+    "data": "node --experimental-modules src/bin/data.mjs"
+  }
+}
