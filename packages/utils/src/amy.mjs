@@ -9,16 +9,17 @@ const filmBaseUrls = [
 ];
 
 const blackList = [
-  'http://vimeo.com/amyjxu',
 ];
 
 const isFilmAnchor = (aTag) => {
-  const url = (aTag.attributes.href || '')
-  return filmBaseUrls.some(baseUrl => url.includes(baseUrl)) &&
-    !blackList.some(baseUrl => url.includes(baseUrl));
+  return filmBaseUrls.some(baseUrl => (aTag.attributes.href || '').includes(baseUrl));
 }
 
-const isViableAnchor = (aTag) => {
+const isNotInBlacklist = (aTag) => {
+  return !blackList.some(baseUrl => (aTag.attributes.href || '').includes(baseUrl));
+}
+
+const isLinkToFullFilm = (aTag) => {
   return aTag.innerHTML.includes('strong');
 }
 
@@ -29,7 +30,8 @@ export const scrapeAmy = async () => {
   const anchorTags = root.querySelectorAll('a');
   const filmLinks = anchorTags
     .filter(isFilmAnchor)
-    .filter(isViableAnchor);
+    .filter(isNotInBlacklist)
+    .filter(isLinkToFullFilm);
   const result = filmLinks.map(a => a.attributes.href);
   return result;
 };

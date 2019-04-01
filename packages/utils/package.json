@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "dotenv": "^7.0.0",
     "node-fetch": "^2.3.0",
-    "node-html-parser": "^1.1.13"
+    "node-html-parser": "^1.1.13",
+    "vimeo": "^2.1.1"
   },
   "scripts": {
-    "scrape": "node --experimental-modules src/bin/scrape.mjs",
-    "data": "node --experimental-modules src/bin/data.mjs"
+    "scrape": "node -r dotenv/config --experimental-modules src/bin/scrape.mjs",
+    "data": "node -r dotenv/config --experimental-modules src/bin/data.mjs"
   }
 }
