@@ -24,7 +24,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "scrape": "ts-node -r dotenv/config src/bin/scrape.ts",
+    "scrape": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/bin/scrape.ts",
     "test": "jest"
   },
   "devDependencies": {

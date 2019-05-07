@@ -6,7 +6,7 @@
   "scripts": {
     "bs": "yarn tsc-utils && lerna bootstrap",
     "dev:files": "http-server local --cors=If-Modified-Since, Range",
-    "run:api": "cd packages/app && yarn start",
+    "run:api": "cd packages/api && yarn start",
     "run:app": "cd packages/app && yarn start",
     "run:scrape": "cd packages/utils && yarn scrape",
     "setup": "yarn install && cd packages/utils && yarn install && cd ../.. && yarn bs",
