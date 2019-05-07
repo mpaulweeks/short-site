@@ -1,5 +1,7 @@
-import { Video } from '../data';
+import { Database } from '../database';
+import { Store } from '../store';
 import { asyncMap } from '../tools';
+import { Video } from '../video';
 import { VimeoClient } from '../vimeoClient';
 
 const sampleLinks = [
@@ -40,8 +42,10 @@ const sampleLinks = [
 (async () => {
   console.log('scraper started');
   console.log(process.env.VIMEO_CLIENT_ID);
+
   // const urls = await scrapeAmy();
   const urls = sampleLinks;
+
   const vimeo = new VimeoClient();
   const allInfos = await asyncMap(urls, async url => {
     return (
@@ -49,8 +53,14 @@ const sampleLinks = [
       null
     );
   });
+  console.log('scraped videos');
   const validInfos = allInfos.filter(i => i);
-  console.log(validInfos);
-  console.log(validInfos.map(i => Video.fromVimeo(i)));
+  // console.log(validInfos);
+  const videos = validInfos.map(i => Video.fromVimeo(i));
+  const db = new Database(videos);
+  console.log('made db');
+  const store = new Store();
+  console.log('made store');
+  await store.uploadDB(db);
   console.log('done!');
 })();
