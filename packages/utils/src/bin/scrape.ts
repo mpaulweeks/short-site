@@ -57,10 +57,14 @@ const sampleLinks = [
   const validInfos = allInfos.filter(i => i);
   console.log(validInfos);
   const videos = validInfos.map(i => Video.fromVimeo(i));
-  const db = new Database(videos);
+
+  // todo: read existing db
+  const db = Database.makeEmpty();
+  videos.forEach(v => db.addVideo(v));
   console.log('made db');
   const store = new Store();
-  console.log('made store');
   await store.uploadDB(db);
+  console.log('uploaded db');
+
   console.log('done!');
 })();

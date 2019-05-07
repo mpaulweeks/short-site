@@ -1,17 +1,50 @@
 import { sortObjs } from "./tools";
 import { Video, VideoData } from "./video";
 
-export class Database {
-  videos: Array<Video>;
+interface File {
+  videos: Array<VideoData>;
+  blacklist: Array<string>;
+};
+interface VideoLookup {
+  [url: string]: Video;
+}
 
-  constructor(videos: Array<Video>) {
-    this.videos = sortObjs(videos, v => v.data.created_at).reverse();
+export class Database {
+  lookup: VideoLookup;
+  blacklist: Array<string>;
+
+  constructor(file: File) {
+    const videos = file.videos.map(vd => new Video(vd));
+    this.lookup = videos.reduce((obj, v) => {
+      obj[v.data.url] = v;
+      return obj;
+    }, {});
+    this.blacklist = file.blacklist;
+  }
+
+  addVideo(video: Video) {
+    const key = video.data.url;
+    if (!this.lookup[key] && !this.blacklist.includes(key)) {
+      this.lookup[key] = video;
+    }
+  }
+  getVideos() {
+    const { lookup } = this;
+    const videos = Object.keys(lookup).map(k => lookup[k]);
+    return sortObjs(videos, v => v.data.created_at).reverse();
   }
 
   toJson(): string {
-    return JSON.stringify(this.videos.map(v => v.data), null, 2);
+    const data: File = {
+      videos: this.getVideos().map(v => v.data),
+      blacklist: this.blacklist,
+    };
+    return JSON.stringify(data, null, 2);
   }
-  static fromData(data: Array<VideoData>): Database {
-    return new Database(data.map(vd => new Video(vd)));
+  static makeEmpty(): Database {
+    return new Database({
+      videos: [],
+      blacklist: [],
+    });
   }
 }

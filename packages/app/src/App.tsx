@@ -35,7 +35,7 @@ export class App extends React.Component<Props, State> {
     const resp = await fetch(url);
     const data = await resp.json();
     this.setState({
-      db: Database.fromData(data),
+      db: new Database(data),
     });
   }
   render() {
@@ -46,7 +46,7 @@ export class App extends React.Component<Props, State> {
         <div> wip </div>
         {db ? (
           <VideosContainer>
-            {db.videos.map(v => (
+            {db.getVideos().map(v => (
               <VideoPreview key={v.data.url} video={v} />
             ))}
           </VideosContainer>
