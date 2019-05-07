@@ -1,5 +1,6 @@
+import { Video } from '../data';
 import { asyncMap } from '../tools';
-import { VimeoClient } from '../vimeo';
+import { VimeoClient } from '../vimeoClient';
 
 const sampleLinks = [
   // 'https://www.youtube.com/watch?v=VfKcLAwFJTo',
@@ -50,5 +51,6 @@ const sampleLinks = [
   });
   const validInfos = allInfos.filter(i => i);
   console.log(validInfos);
+  console.log(validInfos.map(i => Video.fromVimeo(i)));
   console.log('done!');
 })();
