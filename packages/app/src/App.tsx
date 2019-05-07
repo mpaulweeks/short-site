@@ -23,7 +23,9 @@ export class App extends React.Component<Props, State> {
     this.fetchVideos();
   }
   async fetchVideos() {
-    const resp = await fetch('http://localhost:8080/db.json');
+    console.log(process.env);
+    const url = process.env.REACT_APP_IS_DEV ? 'http://localhost:8080/db.json' : 'db.json';
+    const resp = await fetch(url);
     const data = await resp.json();
     this.setState({
       db: Database.fromData(data),

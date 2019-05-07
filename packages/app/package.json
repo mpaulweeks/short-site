@@ -2,6 +2,7 @@
   "name": "short-site-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@types/react": "^16.8.16",
     "@types/react-dom": "^16.8.4",
@@ -14,7 +15,7 @@
     "typescript": "^3.4.5"
   },
   "scripts": {
-    "start": "DOTENV_CONFIG_PATH=../../.env react-scripts start",
+    "start": "REACT_APP_IS_DEV=1 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
