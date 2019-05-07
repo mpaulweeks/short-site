@@ -1,10 +1,11 @@
+import { sortObjs } from "./tools";
 import { Video, VideoData } from "./video";
 
 export class Database {
   videos: Array<Video>;
 
   constructor(videos: Array<Video>) {
-    this.videos = videos;
+    this.videos = sortObjs(videos, v => v.data.created_at).reverse();
   }
 
   toJson(): string {

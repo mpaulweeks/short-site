@@ -1,3 +1,19 @@
+export function sortObjs<T>(arr: Array<T>, callback: (elm: T) => any) {
+  function compare(a: T, b: T) {
+    const valA = callback(a);
+    const valB = callback(b);
+    if (valA > valB) {
+      return 1;
+    } else if (valA < valB) {
+      return -1;
+    }
+    return 0;
+  }
+  const sorted = arr.concat();
+  sorted.sort(compare);
+  return sorted;
+}
+
 export async function asyncMap<E, T>(
   array: E[],
   callback: (elm: E, index: number, array: E[]) => Promise<T>,

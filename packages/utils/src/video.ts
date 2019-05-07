@@ -4,6 +4,7 @@ export interface VideoData {
   description: string;
   imgUrl: string;
   duration: number;
+  created_at: string,
 }
 
 export class Video {
@@ -20,6 +21,7 @@ export class Video {
       description: data.description,
       imgUrl: data.pictures.sizes.concat().pop().link,
       duration: data.duration,
+      created_at: data.release_time,
     });
   }
 }

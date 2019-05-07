@@ -55,7 +55,7 @@ const sampleLinks = [
   });
   console.log('scraped videos');
   const validInfos = allInfos.filter(i => i);
-  // console.log(validInfos);
+  console.log(validInfos);
   const videos = validInfos.map(i => Video.fromVimeo(i));
   const db = new Database(videos);
   console.log('made db');
