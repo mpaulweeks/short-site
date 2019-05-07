@@ -2,13 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import { Video } from 'short-site-utils';
 
-const Container = styled.div`
+const Container = styled.a`
   border: 4px solid grey;
   border-radius: 8px;
   width: 400px;
   height: 300px;
   margin: 16px;
   overflow: hidden;
+
+  color: black;
+  text-decoration: none;
 
   display: flex;
   flex-direction: column;
@@ -46,7 +49,7 @@ export class VideoPreview extends React.Component<Props> {
   render() {
     const { video } = this.props;
     return (
-      <Container>
+      <Container href={video.data.url}>
         <PreviewContainer>
           <img src={video.data.imgUrl} />
         </PreviewContainer>

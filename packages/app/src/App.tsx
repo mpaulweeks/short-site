@@ -3,6 +3,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { VideoPreview } from './VideoPreview';
 
+const Container = styled.div`
+  text-align: center;
+
+  h1 {
+    text-decoration: underline;
+  }
+`;
 const VideosContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -34,8 +41,9 @@ export class App extends React.Component<Props, State> {
   render() {
     const { db } = this.state;
     return (
-      <div>
+      <Container>
         <h1>short stockpile</h1>
+        <div> wip </div>
         {db ? (
           <VideosContainer>
             {db.videos.map(v => (
@@ -45,7 +53,7 @@ export class App extends React.Component<Props, State> {
         ) : (
             'loading...'
           )}
-      </div>
+      </Container>
     );
   }
 }
