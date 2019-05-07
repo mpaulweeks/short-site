@@ -1,38 +1,62 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Video } from 'short-site-utils';
+import { FlexColumnMixin } from './common';
 
 const Container = styled.a`
-  border: 4px solid grey;
-  border-radius: 8px;
+  border-radius: 0.5rem 0.5rem 0px 0px;
   width: 400px;
-  height: 300px;
+  height: 350px;
   margin: 16px;
   overflow: hidden;
-
-  color: black;
   text-decoration: none;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: center;
-  flex-wrap: nowrap;
+  ${FlexColumnMixin}
+
+  --foreground: black;
+  --background: white;
 `;
 
-const Title = styled.div`
-  margin: 4px;
+const PreviewContainer = styled.div`
+  width: 100%;
+  flex: 1;
+
+  ${FlexColumnMixin}
+
+  & img {
+    height: 100%;
+    min-width: 100%;
+  }
+`;
+const DetailsContainer = styled.div`
+  height: 8rem;
+  width: 100%;
+  border-radius: 0px 0px 0.5rem 0.5rem;
+  border: 1px solid black;
+  border-top-width: 0px;
+  box-sizing: border-box;
+
+  ${FlexColumnMixin}
+
+  color: var(--foreground);
+  background-color: var(--background);
+
+  &:hover {
+    color: var(--background);
+    background-color: var(--foreground);
+  }
+`;
+const TitleRow = styled.div`
   font-size: 1.5em;
   font-weight: bold;
+  flex: 1;
+
+  ${FlexColumnMixin}
 `;
-const Description = styled.div`
-  margin: 4px;
-  font-style: italic;
-`;
-const PreviewContainer = styled.div`
-  & img {
-    width: 100%;
-  }
+const Duration = styled.div`
+  height: 3rem;
+
+  ${FlexColumnMixin}
 `;
 
 interface Props {
@@ -53,12 +77,14 @@ export class VideoPreview extends React.Component<Props> {
         <PreviewContainer>
           <img src={video.data.imgUrl} />
         </PreviewContainer>
-        <Title>
-          {video.data.name}
-        </Title>
-        <Description>
-          {this.formatDuration()}
-        </Description>
+        <DetailsContainer>
+          <TitleRow>
+            {video.data.name}
+          </TitleRow>
+          <Duration>
+            {this.formatDuration()}
+          </Duration>
+        </DetailsContainer>
       </Container>
     )
   }
