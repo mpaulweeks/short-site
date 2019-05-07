@@ -4,9 +4,16 @@
   "private": true,
   "dependencies": {},
   "scripts": {
+    "bs": "yarn tsc-utils && lerna bootstrap",
+    "dev:files": "http-server local --cors=If-Modified-Since, Range",
+    "run:api": "cd packages/app && yarn start",
     "run:app": "cd packages/app && yarn start",
     "run:scrape": "cd packages/utils && yarn scrape",
-    "run:data": "cd packages/utils && yarn data",
-    "setup": "cd packages/app && yarn install"
+    "setup": "yarn install && cd packages/utils && yarn install && cd ../.. && yarn bs",
+    "tsc-utils": "cd packages/utils && yarn tsc"
+  },
+  "devDependencies": {
+    "lerna": "^3.13.4",
+    "typescript": "^3.4.5"
   }
 }

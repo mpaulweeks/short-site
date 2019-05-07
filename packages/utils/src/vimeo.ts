@@ -1,6 +1,8 @@
 import Vimeo from 'vimeo';
 
 export class VimeoClient {
+  client: Vimeo.Vimeo;
+
   constructor() {
     this.client = new Vimeo.Vimeo(
       process.env.VIMEO_CLIENT_ID,
@@ -9,7 +11,7 @@ export class VimeoClient {
     );
   }
   async get(url) {
-    if (!url.includes('vimeo.com')){
+    if (!url.includes('vimeo.com')) {
       return null;
     }
     const id = url.split('vimeo.com/')[1].split('/')[0].split('?')[0];

@@ -26,7 +26,7 @@ const isLinkToFullFilm = (aTag) => {
 export const scrapeAmy = async () => {
   const resp = await fetch('https://amyjxu.me/bookmarks');
   const body = await resp.text();
-  const root = html.parse(body);
+  const root = html.parse(body) as html.HTMLElement;
   const anchorTags = root.querySelectorAll('a');
   const filmLinks = anchorTags
     .filter(isFilmAnchor)
