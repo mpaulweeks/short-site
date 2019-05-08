@@ -1,6 +1,6 @@
 import { Storage } from '@google-cloud/storage';
 import fs from 'fs';
-import { Database } from './database';
+import { Database } from 'short-site-utils';
 
 export class Store {
   dbPath: string;
