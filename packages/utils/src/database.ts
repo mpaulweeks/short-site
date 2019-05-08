@@ -28,10 +28,13 @@ export class Database {
       this.lookup[key] = video;
     }
   }
-  getVideos() {
+  getVideos(): Array<Video> {
     const { lookup } = this;
     const videos = Object.keys(lookup).map(k => lookup[k]);
     return sortObjs(videos, v => v.data.created_at).reverse();
+  }
+  contains(url: string): boolean {
+    return !!this.lookup[url];
   }
 
   toJson(): string {

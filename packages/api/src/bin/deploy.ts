@@ -1,4 +1,4 @@
-import { Store } from 'short-site-utils';
+import { Store } from 'short-site-store';
 
 (async () => {
   console.log('uploading api.zip');

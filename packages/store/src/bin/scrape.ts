@@ -41,12 +41,20 @@ const sampleLinks = [
 (async () => {
   console.log('scraper started');
 
+  const store = new Store();
+  const db = await store.downloadDB();
+
   const urls = await scrapeAmy();
   // const urls = sampleLinks;
-  console.log('urls found:', urls.length);
+  console.log('total urls found:', urls.length);
+
+  const newUrls = urls.filter(u => !db.contains(u));
+  console.log('new urls found:', newUrls.length);
+
+  // todo prefilter urls based on whats in db
 
   const vimeo = new VimeoClient();
-  const allInfos = await asyncMap(urls, async url => {
+  const allInfos = await asyncMap(newUrls, async url => {
     return (
       await vimeo.get(url) ||
       null
@@ -59,9 +67,6 @@ const sampleLinks = [
   const videos = validInfos.map(i => Video.fromVimeo(i)).filter(notEmpty);
   console.log('video data parsed:', videos.length);
 
-  const store = new Store();
-
-  const db = await store.downloadDB();
   console.log('videos before:', db.getVideos().length);
   videos.forEach(v => db.addVideo(v));
   console.log('videos after:', db.getVideos().length);
