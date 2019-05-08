@@ -2,6 +2,7 @@ import { Database } from 'short-site-utils';
 import React from 'react';
 import styled from 'styled-components';
 import { VideoPreview } from './VideoPreview';
+import { Api } from '../api';
 
 const Container = styled.div`
   text-align: center;
@@ -25,6 +26,12 @@ interface State {
 
 export class App extends React.Component<Props, State> {
   state: State = {};
+  api: Api;
+
+  constructor(props: Props) {
+    super(props);
+    this.api = new Api();
+  }
 
   componentDidMount() {
     this.fetchVideos();
@@ -38,12 +45,13 @@ export class App extends React.Component<Props, State> {
       db: new Database(data),
     });
   }
+
   render() {
     const { db } = this.state;
     return (
       <Container>
         <h1>short stockpile</h1>
-        <div> wip </div>
+        <div onClick={() => this.api.ping()}> wip </div>
         {db ? (
           <VideosContainer>
             {db.getVideos().map(v => (

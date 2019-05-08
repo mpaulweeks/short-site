@@ -16,6 +16,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "start": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/app.local.ts"
+    "start": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/app.local.ts",
+    "zip": "yarn build && cd dist && zip -r ../dist.zip *.js"
   }
 }
