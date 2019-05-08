@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import html from 'node-html-parser';
+import * as parser from 'node-html-parser';
 
 const filmBaseUrls = [
   'vimeo.com',
@@ -11,27 +11,27 @@ const filmBaseUrls = [
 const blackList = [
 ];
 
-const isFilmAnchor = (aTag) => {
+function isFilmAnchor(aTag: parser.HTMLElement) {
   return filmBaseUrls.some(baseUrl => (aTag.attributes.href || '').includes(baseUrl));
 }
 
-const isNotInBlacklist = (aTag) => {
+function isNotInBlacklist(aTag: parser.HTMLElement) {
   return !blackList.some(baseUrl => (aTag.attributes.href || '').includes(baseUrl));
 }
 
-const isLinkToFullFilm = (aTag) => {
+function isLinkToFullFilm(aTag: parser.HTMLElement) {
   return aTag.innerHTML.includes('strong');
 }
 
-export const scrapeAmy = async () => {
+export async function scrapeAmy(): Promise<Array<string>> {
   const resp = await fetch('https://amyjxu.me/bookmarks');
   const body = await resp.text();
-  const root = html.parse(body) as html.HTMLElement;
+  const root = parser.parse(body) as parser.HTMLElement;
   const anchorTags = root.querySelectorAll('a');
   const filmLinks = anchorTags
     .filter(isFilmAnchor)
     .filter(isNotInBlacklist)
     .filter(isLinkToFullFilm);
-  const result = filmLinks.map(a => a.attributes.href);
-  return result;
+  const urls = filmLinks.map(a => a.attributes.href);
+  return urls;
 };

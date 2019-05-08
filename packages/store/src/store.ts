@@ -1,11 +1,18 @@
 import { Storage } from '@google-cloud/storage';
 import fs from 'fs';
+import fetch from 'node-fetch';
 import { Database } from 'short-site-utils';
 
 export class Store {
   dbPath: string;
   constructor() {
     this.dbPath = process.env.IS_DEV ? `../../local/db.json` : 'db.json';
+  }
+  async downloadDB(): Promise<Database> {
+    const url = process.env.IS_DEV ? 'http://localhost:8080/db.json' : 'https://storage.googleapis.com/shortstockpile.com/db.json';
+    const resp = await fetch(url);
+    const data = await resp.json();
+    return new Database(data);
   }
   async updateLocalDB(db: Database): Promise<string> {
     const path = this.dbPath;

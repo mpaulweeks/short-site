@@ -38,6 +38,7 @@ export class App extends React.Component<Props, State> {
   }
   async fetchVideos() {
     console.log(process.env);
+    // todo read from utils
     const url = process.env.REACT_APP_IS_DEV ? 'http://localhost:8080/db.json' : 'https://storage.googleapis.com/shortstockpile.com/db.json';
     const resp = await fetch(url);
     const data = await resp.json();
