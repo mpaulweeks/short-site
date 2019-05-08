@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@google-cloud/storage": "^2.5.0",
     "@types/jest": "^24.0.12",
     "@types/md5": "^2.1.33",
     "@types/node": "^10.12.18",
