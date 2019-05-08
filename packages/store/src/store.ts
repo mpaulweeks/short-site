@@ -25,9 +25,14 @@ export class Store {
       );
     });
   }
-  async uploadToGCP(path: string): Promise<string> {
+  async uploadToGCP(path: string, makePublic?: boolean): Promise<string> {
     const storage = new Storage();
-    await storage.bucket('shortstockpile.com').upload(path, {});
+    const bucketName = 'shortstockpile.com';
+    await storage.bucket(bucketName).upload(path, {});
+    if (makePublic) {
+      const filename = path.split('/').pop() || path;
+      await storage.bucket(bucketName).file(filename).makePublic();
+    }
     return 'success';
   }
 }

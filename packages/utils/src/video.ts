@@ -14,7 +14,10 @@ export class Video {
     this.data = data;
   }
 
-  static fromVimeo(data: any) {
+  static fromVimeo(data: any): Video | null {
+    if (!data) {
+      return null;
+    }
     return new Video({
       url: data.link,
       name: data.name,

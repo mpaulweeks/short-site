@@ -10,6 +10,7 @@
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
     "short-site-utils": "0.1.0",
+    "short-site-store": "0.1.0",
     "ts-node": "^8.1.0",
     "typescript": "^3.2.4"
   },
