@@ -7,8 +7,14 @@ import { Api } from '../api';
 const Container = styled.div`
   text-align: center;
 
+  color: #FFFFFF;
+  background-color: #333333;
+`;
+const Title = styled.div`
+  padding: 2rem;
   h1 {
-    text-decoration: underline;
+    font-size: 3rem;
+    margin: 0px;
   }
 `;
 const VideosContainer = styled.div`
@@ -51,8 +57,10 @@ export class App extends React.Component<Props, State> {
     const { db } = this.state;
     return (
       <Container>
-        <h1>short stockpile</h1>
-        <div onClick={() => this.api.ping()}> wip </div>
+        <Title>
+          <h1>short stockpile</h1>
+          <div onClick={() => this.api.ping()}> work in progress by @mpaulweeks </div>
+        </Title>
         {db ? (
           <VideosContainer>
             {db.getVideos().map(v => (

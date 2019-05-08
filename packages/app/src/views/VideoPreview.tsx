@@ -31,6 +31,7 @@ const PreviewContainer = styled.div`
 const DetailsContainer = styled.div`
   height: 8rem;
   width: 100%;
+  padding: 0px 1em;
   border-radius: 0px 0px 0.5rem 0.5rem;
   border: 1px solid black;
   border-top-width: 0px;
@@ -47,7 +48,7 @@ const DetailsContainer = styled.div`
   }
 `;
 const TitleRow = styled.div`
-  font-size: 1.5em;
+  font-size: 1.5rem;
   font-weight: bold;
   flex: 1;
 
@@ -55,8 +56,13 @@ const TitleRow = styled.div`
 `;
 const Duration = styled.div`
   height: 3rem;
+  font-size: 1.5rem;
+  font-family: monospace;
+  font-weight: bold;
 
   ${FlexColumnMixin}
+
+  align-self: flex-end;
 `;
 
 interface Props {
