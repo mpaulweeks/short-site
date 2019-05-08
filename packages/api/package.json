@@ -17,10 +17,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "deploy": "yarn build && yarn zip && yarn upload",
+    "build": "tsc && yarn zip",
     "start": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/app.local.ts",
-    "upload": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/bin/deploy.ts",
+    "deploy": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/bin/deploy.ts",
     "zip": "cd dist && zip ../api.zip *.js"
   }
 }

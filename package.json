@@ -5,12 +5,15 @@
   "dependencies": {},
   "scripts": {
     "bs": "yarn tsc-utils && yarn tsc-store && lerna bootstrap",
+    "build:api": "yarn bs && cd packages/api && yarn build",
     "build:app": "yarn bs && cd packages/app && yarn build",
+    "deploy:api": "yarn build:api && cd packages/api && yarn deploy",
     "deploy:app": "yarn build:app && gh-pages -d packages/app/build",
+    "deploy:all": "yarn deploy:api && yarn deploy:app",
     "dev:files": "http-server local --cors=If-Modified-Since, Range",
-    "run:api": "cd packages/api && yarn start",
-    "run:app": "cd packages/app && yarn start",
-    "run:scrape": "cd packages/store && yarn scrape",
+    "dev:api": "cd packages/api && yarn start",
+    "dev:app": "cd packages/app && yarn start",
+    "dev:scrape": "cd packages/store && yarn scrape",
     "setup": "yarn install && yarn bs",
     "tsc-store": "cd packages/store && yarn tsc",
     "tsc-utils": "cd packages/utils && yarn tsc"
