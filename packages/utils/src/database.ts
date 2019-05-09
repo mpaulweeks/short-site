@@ -7,6 +7,28 @@ interface File {
 };
 interface VideoLookup {
   [key: string]: Video;
+};
+
+export interface VideoQuery {
+  sortCallback?: (v: Video) => any,
+  reverse?: boolean,
+};
+interface VideoQueryFull {
+  sortCallback: (v: Video) => any,
+  reverse: boolean,
+};
+const defaultQuery: VideoQueryFull = {
+  sortCallback: v => v.data.key,
+  reverse: false,
+};
+function combineQuery(query?: VideoQuery): VideoQueryFull {
+  let full = { ...defaultQuery };
+  Object.keys(defaultQuery).forEach(key => {
+    if (query && query[key] !== undefined) {
+      full[key] = query[key];
+    }
+  });
+  return full;
 }
 
 export class Database {
@@ -28,10 +50,12 @@ export class Database {
       this.lookup[key] = video;
     }
   }
-  getVideos(): Array<Video> {
+  getVideos(query?: VideoQuery): Array<Video> {
     const { lookup } = this;
+    const fullQuery = combineQuery(query);
     const videos = Object.keys(lookup).map(k => lookup[k]);
-    return sortObjs(videos, v => v.data.created_at).reverse();
+    const sorted = sortObjs(videos, fullQuery.sortCallback);
+    return fullQuery.reverse ? sorted.reverse() : sorted;
   }
   contains(key: string): boolean {
     return !!this.lookup[key];

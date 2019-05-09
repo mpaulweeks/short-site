@@ -1,5 +1,5 @@
-import { Database } from 'short-site-utils';
-import React from 'react';
+import { VideoQuery, Database } from 'short-site-utils';
+import React, { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { VideoPreview } from './VideoPreview';
 import { Api } from '../api';
@@ -17,6 +17,11 @@ const Title = styled.div`
     margin: 0px;
   }
 `;
+const Options = styled.div`
+  & > * {
+    margin: 0px 0.5rem;
+  }
+`;
 const VideosContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -25,14 +30,43 @@ const VideosContainer = styled.div`
   flex-wrap: wrap;
 `;
 
+interface QueryOptions {
+  [key: string]: VideoQuery;
+};
+
 interface Props { }
 interface State {
   db?: Database;
+  sortOptionKey: string;
 };
 
 export class App extends React.Component<Props, State> {
-  state: State = {};
+  state: State = {
+    sortOptionKey: 'pubNew',
+  };
   api: Api;
+  sortOptions: QueryOptions = {
+    alpha: {
+      sortCallback: v => v.data.name,
+      reverse: false,
+    },
+    lenShort: {
+      sortCallback: v => v.data.duration,
+      reverse: false,
+    },
+    lenLong: {
+      sortCallback: v => v.data.duration,
+      reverse: true,
+    },
+    pubNew: {
+      sortCallback: v => v.data.published_at,
+      reverse: true,
+    },
+    pubOld: {
+      sortCallback: v => v.data.published_at,
+      reverse: false,
+    },
+  };
 
   constructor(props: Props) {
     super(props);
@@ -53,17 +87,37 @@ export class App extends React.Component<Props, State> {
     });
   }
 
+  onChangeSort(event: ChangeEvent<HTMLSelectElement>) {
+    this.setState({
+      sortOptionKey: event.target.value,
+    });
+  }
   render() {
-    const { db } = this.state;
+    const { db, sortOptionKey } = this.state;
+    const videos = db && db.getVideos({
+      ...this.sortOptions[sortOptionKey] || {},
+    });
     return (
       <Container>
         <Title>
           <h1>short stockpile</h1>
           <div onClick={() => this.api.ping()}> work in progress by @mpaulweeks </div>
         </Title>
-        {db ? (
+        <Options>
+          <span>
+            Sort by:
+          </span>
+          <select onChange={evt => this.onChangeSort(evt)}>
+            <option value='pubNew'>Published date, Newest</option>
+            <option value='pubOld'>Published date, Oldest</option>
+            <option value='alpha'>Alphabetic</option>
+            <option value='lenShort'>Duration, Shortest</option>
+            <option value='lenLong'>Duration, Longest</option>
+          </select>
+        </Options>
+        {videos ? (
           <VideosContainer>
-            {db.getVideos().map(v => (
+            {videos.map(v => (
               <VideoPreview key={v.data.url} video={v} />
             ))}
           </VideosContainer>
