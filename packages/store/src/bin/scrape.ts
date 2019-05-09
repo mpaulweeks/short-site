@@ -1,4 +1,4 @@
-import { asyncMap, notEmpty, Video } from 'short-site-utils';
+import { asyncMap, Database, notEmpty, Video } from 'short-site-utils';
 import { scrapeAmy } from '../amy';
 import { Store } from '../store';
 import { VimeoClient } from '../vimeoClient';
@@ -43,6 +43,7 @@ const sampleLinks = [
 
   const store = new Store();
   const db = await store.downloadDB();
+  // const db = Database.makeEmpty();
 
   const urls = await scrapeAmy();
   // const urls = sampleLinks;
@@ -51,20 +52,19 @@ const sampleLinks = [
   const newUrls = urls.filter(u => !db.contains(u));
   console.log('new urls found:', newUrls.length);
 
-  // todo prefilter urls based on whats in db
-
   const vimeo = new VimeoClient();
-  const allInfos = await asyncMap(newUrls, async url => {
-    return (
+  const allInfos = await asyncMap(newUrls, async url => ({
+    url: url,
+    info: (
       await vimeo.get(url) ||
       null
-    );
-  });
+    ),
+  }));
 
   const validInfos = allInfos.filter(notEmpty);
   console.log('video data fetched:', validInfos.length);
 
-  const videos = validInfos.map(i => Video.fromVimeo(i)).filter(notEmpty);
+  const videos = validInfos.map(i => Video.fromVimeo(i.url, i.info)).filter(notEmpty);
   console.log('video data parsed:', videos.length);
 
   console.log('videos before:', db.getVideos().length);

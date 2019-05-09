@@ -6,7 +6,7 @@ interface File {
   blacklist: Array<string>;
 };
 interface VideoLookup {
-  [url: string]: Video;
+  [key: string]: Video;
 }
 
 export class Database {
@@ -16,14 +16,14 @@ export class Database {
   constructor(file: File) {
     const videos = file.videos.map(vd => new Video(vd));
     this.lookup = videos.reduce((obj, v) => {
-      obj[v.data.url] = v;
+      obj[v.data.key] = v;
       return obj;
     }, {});
     this.blacklist = file.blacklist;
   }
 
   addVideo(video: Video) {
-    const key = video.data.url;
+    const { key } = video.data;
     if (!this.lookup[key] && !this.blacklist.includes(key)) {
       this.lookup[key] = video;
     }
@@ -33,8 +33,8 @@ export class Database {
     const videos = Object.keys(lookup).map(k => lookup[k]);
     return sortObjs(videos, v => v.data.created_at).reverse();
   }
-  contains(url: string): boolean {
-    return !!this.lookup[url];
+  contains(key: string): boolean {
+    return !!this.lookup[key];
   }
 
   toJson(): string {

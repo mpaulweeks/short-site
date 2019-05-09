@@ -78,15 +78,6 @@ interface Props {
 };
 
 export class VideoPreview extends React.Component<Props> {
-  formatPublished() {
-    return this.props.video.data.created_at.substring(0, 10);
-  }
-  formatDuration() {
-    const { duration } = this.props.video.data;
-    const minutes = Math.floor(duration / 60).toString();
-    const seconds = (duration % 60).toString().padStart(2, '0');
-    return `${minutes}:${seconds}`;
-  }
   render() {
     const { video } = this.props;
     return (
@@ -100,12 +91,12 @@ export class VideoPreview extends React.Component<Props> {
           </TitleRow>
           <SubtitleRow>
             <PublishDate>
-              Published on {video.data.host || 'Vimeo'}
+              Published on {video.displayHost()}
               <br />
-              {this.formatPublished()}
+              {video.data.published_at}
             </PublishDate>
             <Duration>
-              {this.formatDuration()}
+              {video.displayDuration()}
             </Duration>
           </SubtitleRow>
         </DetailsContainer>
