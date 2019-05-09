@@ -43,6 +43,7 @@ export class Video {
   }
   static fromVimeo(key: string, data: any): Video | null {
     if (!data) {
+      console.log('no data for:', key);
       return null;
     }
     return new Video({

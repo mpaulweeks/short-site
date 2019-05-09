@@ -11,9 +11,9 @@
     "deploy:app": "yarn build:app && gh-pages -d packages/app/build",
     "deploy:all": "yarn deploy:api && yarn deploy:app",
     "dev:files": "http-server local --cors=If-Modified-Since, Range",
-    "dev:api": "cd packages/api && yarn start",
-    "dev:app": "cd packages/app && yarn start",
-    "dev:scrape": "cd packages/store && yarn scrape",
+    "dev:api": "yarn bs && cd packages/api && yarn start",
+    "dev:app": "yarn bs && cd packages/app && yarn start",
+    "dev:scrape": "yarn bs && cd packages/store && yarn scrape",
     "setup": "yarn install && yarn bs",
     "tsc-store": "cd packages/store && yarn tsc",
     "tsc-utils": "cd packages/utils && yarn tsc"
