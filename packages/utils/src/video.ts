@@ -1,5 +1,6 @@
 export interface VideoData {
   url: string;
+  host: string;
   name: string;
   description: string;
   imgUrl: string;
@@ -20,6 +21,7 @@ export class Video {
     }
     return new Video({
       url: data.link,
+      host: 'Vimeo',
       name: data.name,
       description: data.description,
       imgUrl: data.pictures.sizes.concat().pop().link,

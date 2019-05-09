@@ -51,15 +51,26 @@ const TitleRow = styled.div`
 
   ${FlexColumnMixin}
 `;
-const Duration = styled.div`
+const SubtitleRow = styled.div`
+  width: 100%;
   height: 3rem;
-  font-size: 1.5rem;
-  font-family: monospace;
-  font-weight: bold;
 
   ${FlexColumnMixin}
+  flex-direction: row;
+  justify-content: space-between;
+`;
+const PublishDate = styled.div`
+  font-style: italic;
+  text-align: left;
 
-  align-self: flex-end;
+  ${FlexColumnMixin}
+`;
+const Duration = styled.div`
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 1.5rem;
+
+  ${FlexColumnMixin}
 `;
 
 interface Props {
@@ -67,6 +78,9 @@ interface Props {
 };
 
 export class VideoPreview extends React.Component<Props> {
+  formatPublished() {
+    return this.props.video.data.created_at.substring(0, 10);
+  }
   formatDuration() {
     const { duration } = this.props.video.data;
     const minutes = Math.floor(duration / 60).toString();
@@ -84,9 +98,16 @@ export class VideoPreview extends React.Component<Props> {
           <TitleRow>
             {video.data.name}
           </TitleRow>
-          <Duration>
-            {this.formatDuration()}
-          </Duration>
+          <SubtitleRow>
+            <PublishDate>
+              Published on {video.data.host || 'Vimeo'}
+              <br />
+              {this.formatPublished()}
+            </PublishDate>
+            <Duration>
+              {this.formatDuration()}
+            </Duration>
+          </SubtitleRow>
         </DetailsContainer>
       </Container>
     )
