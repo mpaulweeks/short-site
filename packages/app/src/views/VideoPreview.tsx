@@ -15,6 +15,10 @@ const Container = styled.a`
 
   --foreground: black;
   --background: white;
+  &:hover {
+    --foreground: white;
+    --background: black;
+  }
 `;
 
 const PreviewContainer = styled.div`
@@ -33,19 +37,12 @@ const DetailsContainer = styled.div`
   width: 100%;
   padding: 0px 1em;
   border-radius: 0px 0px 0.5rem 0.5rem;
-  border: 1px solid black;
-  border-top-width: 0px;
   box-sizing: border-box;
 
   ${FlexColumnMixin}
 
   color: var(--foreground);
   background-color: var(--background);
-
-  &:hover {
-    color: var(--background);
-    background-color: var(--foreground);
-  }
 `;
 const TitleRow = styled.div`
   font-size: 1.5rem;
