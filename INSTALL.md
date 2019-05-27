@@ -6,6 +6,12 @@ touch .env
 touch .google_auth
 ```
 
+# To add further dependencies
+
+```
+yarn lerna add <dep> packages/<pkg-name> [--dev]
+```
+
 # GCP
 
 Helpful links for gcp setup

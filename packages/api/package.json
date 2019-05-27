@@ -4,13 +4,15 @@
   "private": true,
   "dependencies": {
     "@types/body-parser": "^1.17.0",
+    "@types/crypto-js": "^3.1.43",
     "@types/express": "^4.16.1",
     "@types/node": "^12.0.0",
     "body-parser": "^1.19.0",
+    "crypto-js": "^3.1.9-1",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
-    "short-site-utils": "0.1.0",
     "short-site-store": "0.1.0",
+    "short-site-utils": "0.1.0",
     "ts-node": "^8.1.0",
     "typescript": "^3.2.4"
   },
@@ -20,6 +22,13 @@
     "build": "tsc && yarn zip",
     "start": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/app.local.ts",
     "deploy": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/bin/deploy.ts",
+    "test": "jest --watchAll",
+    "test-ci": "jest",
     "zip": "cd dist && zip ../api.zip *.js"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.12",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2"
   }
 }
