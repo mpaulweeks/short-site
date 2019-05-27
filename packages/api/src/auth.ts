@@ -1,4 +1,4 @@
-
+import base64 from 'base-64';
 import CryptoJS from 'crypto-js';
 import { IncorrectAuth, InvalidApiKey } from './exception';
 import { UserToken } from './token';
@@ -11,7 +11,8 @@ function encryptString(key: string, data: string) {
   if (!key) {
     throw new InvalidApiKey('no key provided');
   }
-  return CryptoJS.AES.encrypt(data, key).toString();
+  const encrypted = CryptoJS.AES.encrypt(data, key).toString();
+  return base64.encode(encrypted);
 }
 
 function decryptString(key: string, encrypted: string): string {
@@ -22,7 +23,8 @@ function decryptString(key: string, encrypted: string): string {
     return '';
   }
   try {
-    const bytes = CryptoJS.AES.decrypt(encrypted, key);
+    const decoded = base64.decode(encrypted);
+    const bytes = CryptoJS.AES.decrypt(decoded, key);
     const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
     return decryptedString;
   } catch (e) {

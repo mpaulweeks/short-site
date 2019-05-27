@@ -5,7 +5,8 @@ import styled from 'styled-components';
 import { VideoPreview } from './VideoPreview';
 import { FlexColumnMixin } from './common';
 import { Api } from '../api';
-import { checkForLoginToken } from '../token';
+import { checkForLoginToken } from '../query';
+import { User } from '../user';
 
 const Container = styled.div`
   text-align: center;
@@ -18,20 +19,28 @@ const TopBar = styled.div`
   flex-direction: row;
   justify-content: space-between;
 
-  padding-top: 1rem;
-  & span {
-    margin: 0px 1rem;
-    cursor: pointer;
-    text-decoration: underline;
+  & > div {
+    margin: 1rem;
+    margin-bottom: 0rem;
   }
 `;
-const Debug = styled.div``;
-const Account = styled.div``;
-const Logout = styled.span``;
+const Debug = styled.div`
+  text-align: left;
+`;
+const Account = styled.div`
+  text-align: right;
+`;
+const AccountName = styled.div`
+  font-style: italic;
+`;
+const Clickable = styled.div`
+  cursor: pointer;
+  text-decoration: underline;
+`;
 
 const Title = styled.div`
   padding: 2rem;
-  padding-top: 1rem;
+  padding-top: 0rem;
   h1 {
     font-size: 3rem;
     margin: 0px;
@@ -60,13 +69,12 @@ interface Props {
 interface State {
   db?: Database;
   sortOptionKey: string;
-  loggedIn: boolean;
+  user?: User;
 };
 
 class _App extends React.Component<Props, State> {
   state: State = {
     sortOptionKey: 'pubNew',
-    loggedIn: false,
   };
   api: Api;
   sortOptions: QueryOptions = {
@@ -94,20 +102,28 @@ class _App extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.api = new Api();
+    this.api = new Api(props.cookies);
   }
 
   componentDidMount() {
     const { cookies } = this.props;
     const token = checkForLoginToken();
     if (token) {
-      console.log('setting token:', token);
       cookies.set('token', token);
     }
-    this.setState({
-      loggedIn: !!cookies.get('token'),
-    });
+    const loggedIn = !!cookies.get('token');
+    if (loggedIn) {
+      this.fetchUserInfo();
+    }
     this.fetchVideos();
+  }
+  async fetchUserInfo() {
+    const userInfo = await this.api.whoami();
+    this.setState({
+      user: {
+        email: userInfo.email,
+      },
+    });
   }
   async fetchVideos() {
     console.log(process.env);
@@ -126,7 +142,7 @@ class _App extends React.Component<Props, State> {
   }
   testLogin() {
     window.location.href = `
-      http://localhost:3000?token=U2FsdGVkX1+9rHdC1OrVAJrVhOmT4IPSWnb/jz0uUNvmOq9G9/0vMqSXYDdhM9ly
+      http://localhost:3000?token=VTJGc2RHVmtYMTlhWjNuQldxZk9PbEpOeGVaZDlra3BqalM4cUFmSE03RXhpMCtRZHRYbkhxWmh6OUxySk9HVw==
     `;
   }
 
@@ -136,7 +152,7 @@ class _App extends React.Component<Props, State> {
     });
   }
   render() {
-    const { db, sortOptionKey, loggedIn } = this.state;
+    const { db, sortOptionKey, user } = this.state;
     const videos = db && db.getVideos({
       ...this.sortOptions[sortOptionKey] || {},
     });
@@ -145,16 +161,21 @@ class _App extends React.Component<Props, State> {
         <TopBar>
           <Debug>
             {process.env.REACT_APP_IS_DEV && (
-              <span onClick={() => this.testLogin()}>
+              <Clickable onClick={() => this.testLogin()}>
                 test login
-              </span>
+              </Clickable>
             )}
           </Debug>
           <Account>
-            {loggedIn && (
-              <Logout onClick={() => this.logout()}>
-                log out
-              </Logout>
+            {user && (
+              <div>
+                <AccountName>
+                  {user.email}
+                </AccountName>
+                <Clickable onClick={() => this.logout()}>
+                  log out
+                </Clickable>
+              </div>
             )}
           </Account>
         </TopBar>
