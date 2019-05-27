@@ -37,6 +37,19 @@ export const routes: Array<Route> = [
     },
   },
   {
+    method: 'post',
+    path: '/requestLogin',
+    callback: (req, res) => {
+      // todo send email
+      const email = req.body.email;
+      const token = newToken(email);
+      const encrypted = auth.encryptUserToken(API_KEY, token);
+      res.send(JSON.stringify({
+        token: encrypted,
+      }));
+    },
+  },
+  {
     method: 'get',
     path: '/test',
     callback: (req, res) => {

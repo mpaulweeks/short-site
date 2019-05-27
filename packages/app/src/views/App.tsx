@@ -1,18 +1,26 @@
-import { VideoQuery, Database } from 'short-site-utils';
-import React, { ChangeEvent } from 'react';
+import { Database } from 'short-site-utils';
+import React from 'react';
 import { withCookies, Cookies } from 'react-cookie';
 import styled from 'styled-components';
-import { VideoPreview } from './VideoPreview';
 import { FlexColumnMixin } from './common';
+import { VideoGallery } from './VideoGallery';
+import { Login } from './Login';
 import { Api } from '../api';
 import { checkForLoginToken } from '../query';
 import { User } from '../user';
+
+const Views = {
+  Login: 'login',
+  Gallery: 'gallery',
+};
 
 const Container = styled.div`
   text-align: center;
 
   color: #FFFFFF;
   background-color: #333333;
+
+  min-height: 100vh;
 `;
 const TopBar = styled.div`
   ${FlexColumnMixin}
@@ -46,59 +54,21 @@ const Title = styled.div`
     margin: 0px;
   }
 `;
-const Options = styled.div`
-  & > * {
-    margin: 0px 0.5rem;
-  }
-`;
-const VideosContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-`;
-
-interface QueryOptions {
-  [key: string]: VideoQuery;
-};
 
 interface Props {
   cookies: Cookies;
 }
 interface State {
+  view: string;
   db?: Database;
-  sortOptionKey: string;
   user?: User;
 };
 
 class _App extends React.Component<Props, State> {
   state: State = {
-    sortOptionKey: 'pubNew',
+    view: Views.Gallery,
   };
   api: Api;
-  sortOptions: QueryOptions = {
-    alpha: {
-      sortCallback: v => v.data.name,
-      reverse: false,
-    },
-    lenShort: {
-      sortCallback: v => v.data.duration,
-      reverse: false,
-    },
-    lenLong: {
-      sortCallback: v => v.data.duration,
-      reverse: true,
-    },
-    pubNew: {
-      sortCallback: v => v.data.published_at,
-      reverse: true,
-    },
-    pubOld: {
-      sortCallback: v => v.data.published_at,
-      reverse: false,
-    },
-  };
 
   constructor(props: Props) {
     super(props);
@@ -146,16 +116,16 @@ class _App extends React.Component<Props, State> {
     `;
   }
 
-  onChangeSort(event: ChangeEvent<HTMLSelectElement>) {
+  changeView(newView: string) {
     this.setState({
-      sortOptionKey: event.target.value,
+      view: newView,
     });
   }
+
   render() {
-    const { db, sortOptionKey, user } = this.state;
-    const videos = db && db.getVideos({
-      ...this.sortOptions[sortOptionKey] || {},
-    });
+    const { api } = this;
+    const { cookies } = this.props;
+    const { view, db, user } = this.state;
     return (
       <Container>
         <TopBar>
@@ -167,7 +137,7 @@ class _App extends React.Component<Props, State> {
             )}
           </Debug>
           <Account>
-            {user && (
+            {user ? (
               <div>
                 <AccountName>
                   {user.email}
@@ -176,34 +146,25 @@ class _App extends React.Component<Props, State> {
                   log out
                 </Clickable>
               </div>
-            )}
+            ) : (
+                <Clickable onClick={() => this.changeView(Views.Login)}>
+                  log in
+              </Clickable>
+              )}
           </Account>
         </TopBar>
         <Title>
           <h1>short stockpile</h1>
           <div onClick={() => this.api.ping()}> work in progress by @mpaulweeks </div>
         </Title>
-        <Options>
-          <span>
-            Sort by:
-          </span>
-          <select onChange={evt => this.onChangeSort(evt)}>
-            <option value='pubNew'>Published date, Newest</option>
-            <option value='pubOld'>Published date, Oldest</option>
-            <option value='alpha'>Alphabetic</option>
-            <option value='lenShort'>Duration, Shortest</option>
-            <option value='lenLong'>Duration, Longest</option>
-          </select>
-        </Options>
-        {videos ? (
-          <VideosContainer>
-            {videos.map(v => (
-              <VideoPreview key={v.data.url} video={v} />
-            ))}
-          </VideosContainer>
-        ) : (
-            'loading...'
-          )}
+
+        {/* view selector */}
+        {view === Views.Gallery && (
+          <VideoGallery cookies={cookies} db={db} api={api} />
+        )}
+        {view === Views.Login && (
+          <Login api={api} />
+        )}
       </Container>
     );
   }

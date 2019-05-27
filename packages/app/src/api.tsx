@@ -12,13 +12,15 @@ export class Api {
     this.cookies = cookies;
   }
 
-  private async fetch(path: string, options: any, body: any) {
+  private async fetch(path: string, options: any, body?: any) {
     const resp = await fetch(this.base + path, {
       ...options,
       headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
         'X-Token': this.cookies.get('token'),
       },
-      body: options.method === 'POST' ? JSON.stringify({
+      body: body ? JSON.stringify({
         ...body,
       }) : undefined,
     });
@@ -31,12 +33,12 @@ export class Api {
   private async get(path: string) {
     return this.fetch(path, {
       method: 'GET',
-    }, {});
+    });
   }
   private async post(path: string, body: any) {
     return this.fetch(path, {
       method: 'POST',
-    }, {});
+    }, body);
   }
 
   async ping() {
@@ -45,5 +47,10 @@ export class Api {
   }
   async whoami() {
     return this.get('/whoami');
+  }
+  async requestLogin(email: string) {
+    return this.post('/requestLogin', {
+      email,
+    });
   }
 }
