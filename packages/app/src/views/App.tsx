@@ -1,8 +1,11 @@
 import { VideoQuery, Database } from 'short-site-utils';
 import React, { ChangeEvent } from 'react';
+import { withCookies, Cookies } from 'react-cookie';
 import styled from 'styled-components';
 import { VideoPreview } from './VideoPreview';
+import { FlexColumnMixin } from './common';
 import { Api } from '../api';
+import { checkForLoginToken } from '../token';
 
 const Container = styled.div`
   text-align: center;
@@ -10,8 +13,25 @@ const Container = styled.div`
   color: #FFFFFF;
   background-color: #333333;
 `;
+const TopBar = styled.div`
+  ${FlexColumnMixin}
+  flex-direction: row;
+  justify-content: space-between;
+
+  padding-top: 1rem;
+  & span {
+    margin: 0px 1rem;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+`;
+const Debug = styled.div``;
+const Account = styled.div``;
+const Logout = styled.span``;
+
 const Title = styled.div`
   padding: 2rem;
+  padding-top: 1rem;
   h1 {
     font-size: 3rem;
     margin: 0px;
@@ -34,15 +54,19 @@ interface QueryOptions {
   [key: string]: VideoQuery;
 };
 
-interface Props { }
+interface Props {
+  cookies: Cookies;
+}
 interface State {
   db?: Database;
   sortOptionKey: string;
+  loggedIn: boolean;
 };
 
-export class App extends React.Component<Props, State> {
+class _App extends React.Component<Props, State> {
   state: State = {
     sortOptionKey: 'pubNew',
+    loggedIn: false,
   };
   api: Api;
   sortOptions: QueryOptions = {
@@ -74,6 +98,15 @@ export class App extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    const { cookies } = this.props;
+    const token = checkForLoginToken();
+    if (token) {
+      console.log('setting token:', token);
+      cookies.set('token', token);
+    }
+    this.setState({
+      loggedIn: !!cookies.get('token'),
+    });
     this.fetchVideos();
   }
   async fetchVideos() {
@@ -86,6 +119,16 @@ export class App extends React.Component<Props, State> {
       db: new Database(data),
     });
   }
+  logout() {
+    const { cookies } = this.props;
+    cookies.remove('token');
+    window.location.reload();
+  }
+  testLogin() {
+    window.location.href = `
+      http://localhost:3000?token=U2FsdGVkX1+9rHdC1OrVAJrVhOmT4IPSWnb/jz0uUNvmOq9G9/0vMqSXYDdhM9ly
+    `;
+  }
 
   onChangeSort(event: ChangeEvent<HTMLSelectElement>) {
     this.setState({
@@ -93,12 +136,28 @@ export class App extends React.Component<Props, State> {
     });
   }
   render() {
-    const { db, sortOptionKey } = this.state;
+    const { db, sortOptionKey, loggedIn } = this.state;
     const videos = db && db.getVideos({
       ...this.sortOptions[sortOptionKey] || {},
     });
     return (
       <Container>
+        <TopBar>
+          <Debug>
+            {process.env.REACT_APP_IS_DEV && (
+              <span onClick={() => this.testLogin()}>
+                test login
+              </span>
+            )}
+          </Debug>
+          <Account>
+            {loggedIn && (
+              <Logout onClick={() => this.logout()}>
+                log out
+              </Logout>
+            )}
+          </Account>
+        </TopBar>
         <Title>
           <h1>short stockpile</h1>
           <div onClick={() => this.api.ping()}> work in progress by @mpaulweeks </div>
@@ -128,3 +187,5 @@ export class App extends React.Component<Props, State> {
     );
   }
 }
+
+export const App = withCookies(_App);

@@ -1,6 +1,7 @@
 
 import CryptoJS from 'crypto-js';
 import { IncorrectAuth, InvalidApiKey } from './exception';
+import { UserToken } from './token';
 
 function hashInput(message: string) {
   return CryptoJS.SHA3(message, { outputLength: 64 }).toString();
@@ -27,11 +28,6 @@ function decryptString(key: string, encrypted: string): string {
   } catch (e) {
     throw new IncorrectAuth();
   }
-}
-
-interface UserToken {
-  issued: Date;
-  email: string;
 }
 
 function encryptUserToken(key: string, token: UserToken): string {
