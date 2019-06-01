@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Video } from 'short-site-utils';
 import { Api } from '../api';
 import { User } from '../user';
-import { FlexColumnMixin } from './common';
+import { FlexColumnMixin, AnimateShake } from './common';
 
 const Container = styled.a`
   border-radius: 0.5rem 0.5rem 0px 0px;
@@ -77,11 +77,17 @@ const Duration = styled.div`
 `;
 
 const Favorite = styled.img`
-  width: 1.8rem;
-  height: 2rem;
+  width: 2rem;
+  height: 1.6rem;
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
+`;
+const FavoriteLoading = styled(Favorite)`
+  animation-name: ${AnimateShake};
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 `;
 
 interface Props {
@@ -89,8 +95,22 @@ interface Props {
   video: Video;
   user?: User;
 };
+interface State {
+  loading: boolean;
+}
 
-export class VideoPreview extends React.Component<Props> {
+export class VideoPreview extends React.Component<Props, State> {
+  state = {
+    loading: false,
+  };
+  componentDidUpdate(prevProps: Props) {
+    if (JSON.stringify(prevProps.user) !== JSON.stringify(this.props.user)) {
+      this.setState({
+        loading: false,
+      });
+    }
+  }
+
   isFav(): (boolean | undefined) {
     const { video, user } = this.props;
     const favorites = user && user.favorites;
@@ -98,17 +118,26 @@ export class VideoPreview extends React.Component<Props> {
   }
   toggleFavorite(e: React.MouseEvent<HTMLImageElement, MouseEvent>) {
     e.nativeEvent.preventDefault();
+    if (this.state.loading) {
+      // ignore clicks while waiting on api
+      return;
+    }
     const { api, video, user } = this.props;
     const isFav = this.isFav();
     if (user === undefined) {
       throw 'cannot toggle favorite for undefined user';
     }
     api.setFavorite(user, video, !isFav);
+    this.setState({
+      loading: true,
+    });
   }
   render() {
     const { video, user } = this.props;
+    const { loading } = this.state;
     const isFav = this.isFav();
-    const favSrc = `img/heart_${isFav ? 'red' : 'empty'}.png`;
+    const favSrc = `img/heart_${isFav ? 'red' : 'white'}.png`;
+    console.log(video, user, favSrc);
     return (
       <Container href={video.data.url}>
         <PreviewContainer>
@@ -129,7 +158,11 @@ export class VideoPreview extends React.Component<Props> {
             </Duration>
           </SubtitleRow>
           {isFav !== undefined && (
-            <Favorite src={favSrc} onClick={e => this.toggleFavorite(e)} />
+            loading ? (
+              <FavoriteLoading src={favSrc} />
+            ) : (
+                <Favorite src={favSrc} onClick={e => this.toggleFavorite(e)} />
+              )
           )}
         </DetailsContainer>
       </Container>
