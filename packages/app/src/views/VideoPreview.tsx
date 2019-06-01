@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Video } from 'short-site-utils';
+import { Api } from '../api';
+import { User } from '../user';
 import { FlexColumnMixin } from './common';
 
 const Container = styled.a`
@@ -33,6 +35,7 @@ const PreviewContainer = styled.div`
   }
 `;
 const DetailsContainer = styled.div`
+  position: relative;
   height: 8rem;
   width: 100%;
   padding: 0px 1em;
@@ -73,13 +76,38 @@ const Duration = styled.div`
   ${FlexColumnMixin}
 `;
 
+const Favorite = styled.img`
+  width: 1.8rem;
+  height: 2rem;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+`;
+
 interface Props {
+  api: Api;
   video: Video;
+  user?: User;
 };
 
 export class VideoPreview extends React.Component<Props> {
+  isFav(): (boolean | undefined) {
+    const { video, user } = this.props;
+    const favorites = user && user.favorites;
+    return favorites && favorites.includes(video.data.key);
+  }
+  toggleFavorite() {
+    const { api, video, user } = this.props;
+    const isFav = this.isFav();
+    if (user === undefined) {
+      throw 'cannot toggle favorite for undefined user';
+    }
+    api.setFavorite(user, video, !isFav);
+  }
   render() {
-    const { video } = this.props;
+    const { video, user } = this.props;
+    const isFav = this.isFav();
+    const favSrc = `img/heart_${isFav ? 'red' : 'empty'}.png`;
     return (
       <Container href={video.data.url}>
         <PreviewContainer>
@@ -99,6 +127,9 @@ export class VideoPreview extends React.Component<Props> {
               {video.displayDuration()}
             </Duration>
           </SubtitleRow>
+          {isFav !== undefined && (
+            <Favorite src={favSrc} onClick={() => this.toggleFavorite()} />
+          )}
         </DetailsContainer>
       </Container>
     )

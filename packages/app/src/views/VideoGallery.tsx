@@ -4,6 +4,7 @@ import { Cookies } from 'react-cookie';
 import styled from 'styled-components';
 import { VideoPreview } from './VideoPreview';
 import { Api } from '../api';
+import { User } from '../user';
 
 const Options = styled.div`
   & > * {
@@ -26,6 +27,7 @@ interface Props {
   cookies: Cookies;
   api: Api;
   db?: Database;
+  user?: User;
 }
 interface State {
   sortOptionKey: string;
@@ -64,7 +66,7 @@ export class VideoGallery extends React.Component<Props, State> {
     });
   }
   render() {
-    const { db } = this.props;
+    const { api, db, user } = this.props;
     const { sortOptionKey } = this.state;
     const videos = db && db.getVideos({
       ...this.sortOptions[sortOptionKey] || {},
@@ -86,7 +88,12 @@ export class VideoGallery extends React.Component<Props, State> {
         {videos ? (
           <VideosContainer>
             {videos.map(v => (
-              <VideoPreview key={v.data.url} video={v} />
+              <VideoPreview
+                key={v.data.url}
+                api={api}
+                user={user}
+                video={v}
+              />
             ))}
           </VideosContainer>
         ) : (

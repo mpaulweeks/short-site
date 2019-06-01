@@ -1,4 +1,6 @@
-import { Cookies } from "react-cookie";
+import { Cookies } from 'react-cookie';
+import { Video } from 'short-site-utils';
+import { User } from './user';
 
 const PROD_API = 'https://us-central1-shortstockpile.cloudfunctions.net/short-site-api';
 const DEV_API = 'http://localhost:3001';
@@ -51,6 +53,13 @@ export class Api {
   async requestLogin(email: string) {
     return this.post('/requestLogin', {
       email,
+    });
+  }
+  async setFavorite(user: User, video: Video, isFav: boolean) {
+    return this.post('/setFavorite', {
+      email: user.email,
+      video_key: video.data.key,
+      isFav,
     });
   }
 }

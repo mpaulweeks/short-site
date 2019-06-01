@@ -160,7 +160,7 @@ class _App extends React.Component<Props, State> {
 
         {/* view selector */}
         {view === Views.Gallery && (
-          <VideoGallery cookies={cookies} db={db} api={api} />
+          <VideoGallery user={user} cookies={cookies} db={db} api={api} />
         )}
         {view === Views.Login && (
           <Login api={api} />
