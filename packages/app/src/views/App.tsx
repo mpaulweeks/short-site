@@ -92,6 +92,7 @@ class _App extends React.Component<Props, State> {
     this.setState({
       user: {
         email: userInfo.email,
+        favorites: ['65eaf3fd-2af7-4114-8e74-f09124f4716b'],
       },
     });
   }

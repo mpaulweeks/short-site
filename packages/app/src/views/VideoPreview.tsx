@@ -94,9 +94,10 @@ export class VideoPreview extends React.Component<Props> {
   isFav(): (boolean | undefined) {
     const { video, user } = this.props;
     const favorites = user && user.favorites;
-    return favorites && favorites.includes(video.data.key);
+    return favorites && favorites.includes(video.data.id);
   }
-  toggleFavorite() {
+  toggleFavorite(e: React.MouseEvent<HTMLImageElement, MouseEvent>) {
+    e.nativeEvent.preventDefault();
     const { api, video, user } = this.props;
     const isFav = this.isFav();
     if (user === undefined) {
@@ -128,7 +129,7 @@ export class VideoPreview extends React.Component<Props> {
             </Duration>
           </SubtitleRow>
           {isFav !== undefined && (
-            <Favorite src={favSrc} onClick={() => this.toggleFavorite()} />
+            <Favorite src={favSrc} onClick={e => this.toggleFavorite(e)} />
           )}
         </DetailsContainer>
       </Container>

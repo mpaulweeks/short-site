@@ -6,7 +6,7 @@ interface File {
   blacklist: Array<string>;
 };
 interface VideoLookup {
-  [key: string]: Video;
+  [id: string]: Video;
 };
 
 export interface VideoQuery {
@@ -18,7 +18,7 @@ interface VideoQueryFull {
   reverse: boolean,
 };
 const defaultQuery: VideoQueryFull = {
-  sortCallback: v => v.data.key,
+  sortCallback: v => v.data.name,
   reverse: false,
 };
 function combineQuery(query?: VideoQuery): VideoQueryFull {
@@ -32,33 +32,39 @@ function combineQuery(query?: VideoQuery): VideoQueryFull {
 }
 
 export class Database {
-  lookup: VideoLookup;
+  byId: VideoLookup;
+  byUrl: VideoLookup;
   blacklist: Array<string>;
 
   constructor(file: File) {
     const videos = file.videos.map(vd => new Video(vd));
-    this.lookup = videos.reduce((obj, v) => {
-      obj[v.data.key] = v;
+    this.byId = videos.reduce((obj, v) => {
+      obj[v.data.id] = v;
+      return obj;
+    }, {});
+    this.byUrl = videos.reduce((obj, v) => {
+      obj[v.data.url] = v;
       return obj;
     }, {});
     this.blacklist = file.blacklist;
   }
 
   addVideo(video: Video) {
-    const { key } = video.data;
-    if (!this.lookup[key] && !this.blacklist.includes(key)) {
-      this.lookup[key] = video;
+    const { id, url } = video.data;
+    if (!this.byId[id] && !this.byUrl[url] && !this.blacklist.includes(url)) {
+      this.byId[id] = video;
+      this.byUrl[url] = video;
     }
   }
   getVideos(query?: VideoQuery): Array<Video> {
-    const { lookup } = this;
+    const { byId } = this;
     const fullQuery = combineQuery(query);
-    const videos = Object.keys(lookup).map(k => lookup[k]);
+    const videos = Object.keys(byId).map(k => byId[k]);
     const sorted = sortObjs(videos, fullQuery.sortCallback);
     return fullQuery.reverse ? sorted.reverse() : sorted;
   }
-  contains(key: string): boolean {
-    return !!this.lookup[key];
+  contains(url: string): boolean {
+    return !!this.byUrl[url];
   }
 
   toJson(): string {

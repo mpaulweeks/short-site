@@ -4,7 +4,7 @@ export enum VideoHost {
 }
 
 export interface VideoData {
-  key: string;
+  id: string;
   host: VideoHost;
   url: string;
   name: string;
@@ -18,7 +18,7 @@ export interface VideoData {
 export class Video {
   data: VideoData;
 
-  constructor(data) {
+  constructor(data: VideoData) {
     this.data = data;
   }
   displayHost() {
@@ -41,13 +41,13 @@ export class Video {
   static now() {
     return new Date().toISOString().substring(0, 10);
   }
-  static fromVimeo(key: string, data: any): Video | null {
+  static fromVimeo(id: string, url: string, data: any): Video | null {
     if (!data) {
-      console.log('no data for:', key);
+      console.log('no data for:', url);
       return null;
     }
     return new Video({
-      key: key,
+      id: id,
       host: VideoHost.Vimeo,
       url: data.link,
       name: data.name,

@@ -58,7 +58,7 @@ export class Api {
   async setFavorite(user: User, video: Video, isFav: boolean) {
     return this.post('/setFavorite', {
       email: user.email,
-      video_key: video.data.key,
+      video: video.data.id,
       isFav,
     });
   }

@@ -1,7 +1,12 @@
-import { asyncMap, Database, notEmpty, Video } from 'short-site-utils';
+import { asyncMap, notEmpty, Video } from 'short-site-utils';
+import uuidv4 from 'uuid/v4';
 import { scrapeAmy } from '../amy';
 import { Store } from '../store';
 import { VimeoClient } from '../vimeoClient';
+
+function newId(): string {
+  return uuidv4();
+}
 
 const sampleLinks = [
   // 'https://www.youtube.com/watch?v=VfKcLAwFJTo',
@@ -64,7 +69,7 @@ const sampleLinks = [
   const validInfos = allInfos.filter(notEmpty);
   console.log('video data fetched:', validInfos.length);
 
-  const videos = validInfos.map(i => Video.fromVimeo(i.url, i.info)).filter(notEmpty);
+  const videos = validInfos.map(i => Video.fromVimeo(newId(), i.url, i.info)).filter(notEmpty);
   console.log('video data parsed:', videos.length);
 
   console.log('videos before:', db.getVideos().length);

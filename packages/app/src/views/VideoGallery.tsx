@@ -89,7 +89,7 @@ export class VideoGallery extends React.Component<Props, State> {
           <VideosContainer>
             {videos.map(v => (
               <VideoPreview
-                key={v.data.url}
+                key={v.data.id}
                 api={api}
                 user={user}
                 video={v}
