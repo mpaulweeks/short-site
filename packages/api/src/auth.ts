@@ -15,7 +15,7 @@ function encryptString(key: string, data: string) {
   return base64.encode(encrypted);
 }
 
-function decryptString(key: string, encrypted: string): string {
+function decryptString(key: string, encrypted?: string): string {
   if (!key) {
     throw new InvalidApiKey('no key provided');
   }
@@ -37,7 +37,7 @@ function encryptUserToken(key: string, token: UserToken): string {
   return encryptString(key, decrypted);
 }
 
-function decryptUserToken(key: string, encrypted: string): UserToken {
+function decryptUserToken(key: string, encrypted?: string): UserToken {
   const decrypted = decryptString(key, encrypted);
   const parts = decrypted.split(':');
   if (parts.length !== 2) {

@@ -1,7 +1,7 @@
 import { sortObjs } from "./tools";
 import { Video, VideoData } from "./video";
 
-interface File {
+export interface DatabaseFile {
   videos: Array<VideoData>;
   blacklist: Array<string>;
 };
@@ -36,7 +36,7 @@ export class Database {
   byUrl: VideoLookup;
   blacklist: Array<string>;
 
-  constructor(file: File) {
+  constructor(file: DatabaseFile) {
     const videos = file.videos.map(vd => new Video(vd));
     this.byId = videos.reduce((obj, v) => {
       obj[v.data.id] = v;
@@ -68,7 +68,7 @@ export class Database {
   }
 
   toJson(): string {
-    const data: File = {
+    const data: DatabaseFile = {
       videos: this.getVideos().map(v => v.data),
       blacklist: this.blacklist,
     };
@@ -79,5 +79,38 @@ export class Database {
       videos: [],
       blacklist: [],
     });
+  }
+}
+
+export interface FavoritesFile {
+  user: {
+    [email: string]: Array<string>,
+  }
+  video: {
+    [videoId: string]: number,
+  },
+}
+
+export class Favorites {
+  file: FavoritesFile;
+  constructor(file: FavoritesFile) {
+    this.file = file;
+  }
+
+  addFavorite(email: string, videoId: string) {
+    const { file } = this;
+    file.user[email] = Array.from(new Set([
+      ...(file.user[email] || []), videoId,
+    ]));
+    file.video[videoId] = (file.video[videoId] || 0) + 1;
+  }
+  removeFavorite(email: string, videoId: string) {
+    const { file } = this;
+    file.user[email] = (file.user[email] || []).filter(id => id !== videoId);
+    file.video[videoId] = (file.video[videoId] || 1) - 1;
+  }
+
+  toJson(): string {
+    return JSON.stringify(this.file, null, 2);
   }
 }
