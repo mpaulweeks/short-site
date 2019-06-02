@@ -13,7 +13,8 @@ export async function setFavorite(email: string, videoId: string, isFavorite: bo
   } else {
     favs.removeFavorite(email, videoId);
   }
-  await store.updateLocalFavorites(favs);
+  const path = await store.updateLocalFavorites(favs);
+  await store.uploadToGCP(path, true);
 
   return {
     user: favs.getUser(email),
