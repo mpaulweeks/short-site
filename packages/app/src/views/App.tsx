@@ -89,10 +89,11 @@ class _App extends React.Component<Props, State> {
   }
   async fetchUserInfo() {
     const userInfo = await this.api.whoami();
+    console.log(userInfo);
     this.setState({
       user: {
         email: userInfo.email,
-        favorites: ['65eaf3fd-2af7-4114-8e74-f09124f4716b'],
+        favorites: userInfo.favorites,
       },
     });
   }
@@ -106,6 +107,20 @@ class _App extends React.Component<Props, State> {
       db: new Database(data),
     });
   }
+
+  // todo make redux
+  setFavorite = async (email: string, videoId: string, isFav: boolean) => {
+    console.log('settings:', email, videoId, isFav);
+    const newFavs = await this.api.setFavorite(email, videoId, isFav);
+    console.log('set done!', newFavs);
+    this.setState({
+      user: {
+        email: email,
+        favorites: newFavs.favorites,
+      },
+    });
+  }
+
   logout() {
     const { cookies } = this.props;
     cookies.remove('token');
@@ -161,7 +176,7 @@ class _App extends React.Component<Props, State> {
 
         {/* view selector */}
         {view === Views.Gallery && (
-          <VideoGallery user={user} cookies={cookies} db={db} api={api} />
+          <VideoGallery user={user} cookies={cookies} db={db} setFavorite={this.setFavorite} />
         )}
         {view === Views.Login && (
           <Login api={api} />

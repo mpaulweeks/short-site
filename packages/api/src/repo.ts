@@ -1,6 +1,10 @@
 import { Store } from "short-site-store";
 
-async function setFavorite(email: string, videoId: string, isFavorite: boolean) {
+export interface FavoritesData {
+  user: Array<string>,
+};
+
+export async function setFavorite(email: string, videoId: string, isFavorite: boolean): Promise<FavoritesData> {
   const store = new Store();
   const favs = await store.downloadFavorites();
 
@@ -9,6 +13,17 @@ async function setFavorite(email: string, videoId: string, isFavorite: boolean) 
   } else {
     favs.removeFavorite(email, videoId);
   }
+  await store.updateLocalFavorites(favs);
 
-  return store.updateLocalFavorites(favs);
+  return {
+    user: favs.getUser(email),
+  };
+}
+
+export async function getFavorites(email: string): Promise<FavoritesData> {
+  const store = new Store();
+  const favs = await store.downloadFavorites();
+  return {
+    user: favs.getUser(email),
+  };
 }

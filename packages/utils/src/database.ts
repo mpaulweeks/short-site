@@ -110,6 +110,10 @@ export class Favorites {
     file.video[videoId] = (file.video[videoId] || 1) - 1;
   }
 
+  getUser(email: string): Array<string> {
+    return this.file.user[email] || [];
+  }
+
   toJson(): string {
     return JSON.stringify(this.file, null, 2);
   }

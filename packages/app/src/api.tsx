@@ -1,6 +1,4 @@
 import { Cookies } from 'react-cookie';
-import { Video } from 'short-site-utils';
-import { User } from './user';
 
 const PROD_API = 'https://us-central1-shortstockpile.cloudfunctions.net/short-site-api';
 const DEV_API = 'http://localhost:3001';
@@ -55,11 +53,16 @@ export class Api {
       email,
     });
   }
-  async setFavorite(user: User, video: Video, isFav: boolean) {
+  async setFavorite(email: string, videoId: string, isFav: boolean) {
     return this.post('/setFavorite', {
-      email: user.email,
-      video: video.data.id,
-      isFav,
+      email: email,
+      video: videoId,
+      favorite: isFav,
+    });
+  }
+  async getFavorites(email: string) {
+    return this.post('/getFavorites', {
+      email: email,
     });
   }
 }

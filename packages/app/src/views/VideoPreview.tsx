@@ -91,7 +91,7 @@ const FavoriteLoading = styled(Favorite)`
 `;
 
 interface Props {
-  api: Api;
+  setFavorite: (email: string, videoId: string, isFav: boolean) => void;
   video: Video;
   user?: User;
 };
@@ -122,14 +122,15 @@ export class VideoPreview extends React.Component<Props, State> {
       // ignore clicks while waiting on api
       return;
     }
-    const { api, video, user } = this.props;
+    const { video, user } = this.props;
     const isFav = this.isFav();
     if (user === undefined) {
       throw 'cannot toggle favorite for undefined user';
     }
-    api.setFavorite(user, video, !isFav);
     this.setState({
       loading: true,
+    }, () => {
+      this.props.setFavorite(user.email, video.data.id, !isFav);
     });
   }
   render() {
@@ -137,7 +138,6 @@ export class VideoPreview extends React.Component<Props, State> {
     const { loading } = this.state;
     const isFav = this.isFav();
     const favSrc = `img/heart_${isFav ? 'red' : 'white'}.png`;
-    console.log(video, user, favSrc);
     return (
       <Container href={video.data.url}>
         <PreviewContainer>

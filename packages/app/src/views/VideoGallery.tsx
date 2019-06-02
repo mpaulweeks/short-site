@@ -3,7 +3,6 @@ import React, { ChangeEvent } from 'react';
 import { Cookies } from 'react-cookie';
 import styled from 'styled-components';
 import { VideoPreview } from './VideoPreview';
-import { Api } from '../api';
 import { User } from '../user';
 
 const Options = styled.div`
@@ -25,7 +24,7 @@ interface QueryOptions {
 
 interface Props {
   cookies: Cookies;
-  api: Api;
+  setFavorite: (email: string, videoId: string, isFav: boolean) => void;
   db?: Database;
   user?: User;
 }
@@ -66,7 +65,7 @@ export class VideoGallery extends React.Component<Props, State> {
     });
   }
   render() {
-    const { api, db, user } = this.props;
+    const { setFavorite, db, user } = this.props;
     const { sortOptionKey } = this.state;
     const videos = db && db.getVideos({
       ...this.sortOptions[sortOptionKey] || {},
@@ -90,7 +89,7 @@ export class VideoGallery extends React.Component<Props, State> {
             {videos.map(v => (
               <VideoPreview
                 key={v.data.id}
-                api={api}
+                setFavorite={setFavorite}
                 user={user}
                 video={v}
               />

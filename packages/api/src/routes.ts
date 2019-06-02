@@ -1,5 +1,6 @@
 import { Request, RequestHandler, Response } from "express";
 import auth from "./auth";
+import { getFavorites, setFavorite } from './repo';
 import { newToken } from "./token";
 
 const API_KEY = process.env.API_KEY || '';
@@ -10,11 +11,18 @@ interface Route {
   callback: RequestHandler;
 };
 
-function verifyUser(req, res, email) {
+function extractToken(req: Request): string | undefined {
   const token = req.headers['x-token'];
+  return Array.isArray(token) ? token.pop() : token;
+}
+
+function verifyUser(req: Request, res: Response, email) {
+  const token = extractToken(req);
   const actual = auth.decryptUserToken(API_KEY, token).email;
   if (actual !== email) {
-    res.abort(403);
+    res.status(403).send({
+      message: 'error during auth',
+    });
     throw 'unauthed user action';
   }
 }
@@ -34,16 +42,21 @@ export const routes: Array<Route> = [
     method: 'get',
     path: '/whoami',
     callback: (req: Request, res: Response) => {
-      const token = req.headers['x-token'];
-      let email: (string | null) = null;
+      const token = extractToken(req);
       try {
-        email = auth.decryptUserToken(API_KEY, token).email;
+        const email = auth.decryptUserToken(API_KEY, token).email;
+        getFavorites(email).then(favoriteData => {
+          res.send(JSON.stringify({
+            email,
+            favorites: favoriteData.user,
+          }));
+        });
       } catch (e) {
         // do nothing
+        res.status(403).send({
+          message: 'error during auth',
+        });
       }
-      res.send(JSON.stringify({
-        email,
-      }));
     },
   },
   {
@@ -67,10 +80,24 @@ export const routes: Array<Route> = [
       const video = req.body.video;
       const favorite = req.body.favorite;
       verifyUser(req, res, email);
-      setFavorite(email, video, favorite);
-      res.send(JSON.stringify({
-        token: encrypted,
-      }));
+      setFavorite(email, video, favorite).then(favoriteData => {
+        res.send(JSON.stringify({
+          favorites: favoriteData.user,
+        }));
+      });
+    },
+  },
+  {
+    method: 'post',
+    path: '/getFavorites',
+    callback: (req: Request, res: Response) => {
+      const email = req.body.email;
+      verifyUser(req, res, email);
+      getFavorites(email).then(favoriteData => {
+        res.send(JSON.stringify({
+          favorites: favoriteData.user,
+        }));
+      });
     },
   },
   {

@@ -14,7 +14,7 @@ app.use(function (req, res, next) {
 });
 
 routes.forEach(r => {
-  app[r.method.toLowerCase()](r.path, (req, res) => r.callback(req, res));
+  app[r.method.toLowerCase()](r.path, (req, res, next) => r.callback(req, res, next));
 });
 
 app.listen(port, () =>
