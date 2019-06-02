@@ -7,7 +7,7 @@ export function gcp(req, res) {
   let served = false;
   routes.forEach(route => {
     if (req.path === route.path && req.method === route.method.toUpperCase()) {
-      route.callback(req, res);
+      route.callback(req, res, () => { });
       served = true;
     }
   });
