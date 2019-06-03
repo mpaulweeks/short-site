@@ -21,7 +21,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc && yarn zip",
-    "start": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/app.local.ts",
+    "start": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/index.ts",
     "deploy": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/bin/deploy.ts",
     "test": "jest --watchAll",
     "test-ci": "jest",

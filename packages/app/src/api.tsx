@@ -1,7 +1,7 @@
 import { Cookies } from 'react-cookie';
 
 const PROD_API = 'https://us-central1-shortstockpile.cloudfunctions.net/short-site-api';
-const DEV_API = 'http://localhost:3001';
+const DEV_API = 'http://localhost:5555';
 
 export class Api {
   base: string;
