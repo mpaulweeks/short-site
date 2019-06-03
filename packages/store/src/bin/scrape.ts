@@ -76,7 +76,7 @@ const sampleLinks = [
   videos.forEach(v => db.addVideo(v));
   console.log('videos after:', db.getVideos().length);
 
-  const dbPath = await store.updateLocalDB(db);
-  await store.uploadToGCP(dbPath, true);
+  await store.updateLocalDB(db);
+  await store.uploadDatabaseToGCP(db);
   console.log('uploaded db');
 })();

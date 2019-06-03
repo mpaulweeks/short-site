@@ -4,25 +4,29 @@ import fetch from 'node-fetch';
 import { Database, Favorites } from 'short-site-utils';
 
 export class Store {
-  dbPath: string;
-  favoritesPath: string;
-  constructor() {
-    this.dbPath = process.env.IS_DEV ? `../../local/db.json` : 'db.json';
-    this.favoritesPath = process.env.IS_DEV ? `../../local/fav.json` : 'fav.json';
-  }
+  dbFilename = 'db.json';
+  favoritesFilename = 'fav.json';
+  devUrl = 'http://localhost:8080/';
+  prodUrl = 'https://storage.googleapis.com/shortstockpile.com/';
+
   async downloadDB(): Promise<Database> {
-    const url = process.env.IS_DEV ? 'http://localhost:8080/db.json' : 'https://storage.googleapis.com/shortstockpile.com/db.json';
+    const url = (process.env.IS_DEV ? this.devUrl : this.prodUrl) + this.dbFilename;
     const resp = await fetch(url);
     const data = await resp.json();
     return new Database(data);
   }
   async downloadFavorites(): Promise<Favorites> {
-    const url = process.env.IS_DEV ? 'http://localhost:8080/fav.json' : 'https://storage.googleapis.com/shortstockpile.com/fav.json';
+    const url = (process.env.IS_DEV ? this.devUrl : this.prodUrl) + this.favoritesFilename;
     const resp = await fetch(url);
     const data = await resp.json();
     return new Favorites(data);
   }
-  async updateLocalJson(path: string, jsonStr: string): Promise<string> {
+
+  private async updateLocalJson(filename: string, jsonStr: string): Promise<string> {
+    const path = `../../local/${filename}`;
+    if (!process.env.IS_DEV) {
+      return 'not on dev, skipping local update';
+    }
     return new Promise((resolve, reject) => {
       fs.writeFile(
         path,
@@ -40,19 +44,26 @@ export class Store {
     });
   }
   async updateLocalDB(db: Database): Promise<string> {
-    return this.updateLocalJson(this.dbPath, db.toJson());
+    return this.updateLocalJson(this.dbFilename, db.toJson());
   }
   async updateLocalFavorites(ff: Favorites): Promise<string> {
-    return this.updateLocalJson(this.favoritesPath, ff.toJson());
+    return this.updateLocalJson(this.favoritesFilename, ff.toJson());
   }
-  async uploadToGCP(path: string, makePublic?: boolean): Promise<string> {
+
+  private async uploadJsonToGCP(filename: string, data: string, makePublic?: boolean): Promise<string> {
     const storage = new Storage();
     const bucketName = 'shortstockpile.com';
-    await storage.bucket(bucketName).upload(path, {});
+    const file = storage.bucket(bucketName).file(filename);
+    await file.save(data);
     if (makePublic) {
-      const filename = path.split('/').pop() || path;
-      await storage.bucket(bucketName).file(filename).makePublic();
+      await file.makePublic();
     }
     return 'success';
+  }
+  async uploadDatabaseToGCP(db: Database): Promise<string> {
+    return this.uploadJsonToGCP('db.json', db.toJson(), true);
+  }
+  async uploadFavoritesToGCP(ff: Favorites): Promise<string> {
+    return this.uploadJsonToGCP('fav.json', ff.toJson(), true);
   }
 }

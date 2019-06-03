@@ -2,6 +2,7 @@ import { sortObjs } from "./tools";
 import { Video, VideoData } from "./video";
 
 export interface DatabaseFile {
+  updated: string,
   videos: Array<VideoData>;
   blacklist: Array<string>;
 };
@@ -69,6 +70,7 @@ export class Database {
 
   toJson(): string {
     const data: DatabaseFile = {
+      updated: new Date().toISOString(),
       videos: this.getVideos().map(v => v.data),
       blacklist: this.blacklist,
     };
@@ -76,6 +78,7 @@ export class Database {
   }
   static makeEmpty(): Database {
     return new Database({
+      updated: new Date().toISOString(),
       videos: [],
       blacklist: [],
     });
@@ -83,6 +86,7 @@ export class Database {
 }
 
 export interface FavoritesFile {
+  updated: string,
   user: {
     [email: string]: Array<string>,
   }
@@ -115,6 +119,9 @@ export class Favorites {
   }
 
   toJson(): string {
-    return JSON.stringify(this.file, null, 2);
+    return JSON.stringify({
+      ...this.file,
+      updated: new Date().toISOString(),
+    }, null, 2);
   }
 }
