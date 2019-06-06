@@ -1,4 +1,4 @@
-import { Storage } from '@google-cloud/storage';
+import { Bucket, Storage } from '@google-cloud/storage';
 import fs from 'fs';
 import fetch from 'node-fetch';
 import { Database, Favorites } from 'short-site-utils';
@@ -50,10 +50,19 @@ export class Store {
     return this.updateLocalJson(this.favoritesFilename, ff.toJson());
   }
 
-  private async uploadJsonToGCP(filename: string, data: string, makePublic?: boolean): Promise<string> {
+  private getBucket(): Bucket {
     const storage = new Storage();
     const bucketName = 'shortstockpile.com';
-    const file = storage.bucket(bucketName).file(filename);
+    return storage.bucket(bucketName);
+  }
+
+  async uploadFileToGCP(path: string): Promise<string> {
+    await this.getBucket().upload(path, {});
+    return path;
+  }
+
+  private async uploadJsonToGCP(filename: string, data: string, makePublic?: boolean): Promise<string> {
+    const file = this.getBucket().file(filename);
     await file.save(data);
     if (makePublic) {
       await file.makePublic();

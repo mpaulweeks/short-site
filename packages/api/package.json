@@ -25,7 +25,7 @@
     "deploy": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/bin/deploy.ts",
     "test": "jest --watchAll",
     "test-ci": "jest",
-    "zip": "cd dist && zip ../api.zip *.js"
+    "zip": "cd dist && zip ../api.zip *.js && cd .. && zip -ur api.zip node_modules"
   },
   "devDependencies": {
     "@types/jest": "^24.0.12",
