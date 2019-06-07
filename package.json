@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {},
   "scripts": {
-    "bs": "yarn tsc-utils && yarn tsc-store && lerna bootstrap",
+    "bs": "yarn build:utils && yarn build:store && lerna bootstrap",
+    "build:store": "cd packages/store && yarn build",
+    "build:utils": "cd packages/utils && yarn build",
     "build:api": "yarn bs && cd packages/api && yarn build",
     "build:app": "yarn bs && cd packages/app && yarn build",
     "deploy:all": "yarn deploy:api && yarn deploy:app",
@@ -18,9 +20,7 @@
     "test:all": "yarn test:api && yarn test:app && yarn test:utils",
     "test:api": "cd packages/api && yarn test-ci",
     "test:app": "cd packages/app && yarn test-ci",
-    "test:utils": "cd packages/utils && yarn test-ci",
-    "tsc-store": "cd packages/store && yarn tsc",
-    "tsc-utils": "cd packages/utils && yarn tsc"
+    "test:utils": "cd packages/utils && yarn test-ci"
   },
   "devDependencies": {
     "gh-pages": "^2.0.1",
