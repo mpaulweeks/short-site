@@ -27,12 +27,13 @@
     "build": "tsc",
     "prestart": "yarn build",
     "start": "export $(grep -v '^#' ../../.env | xargs) && functions-framework --signature-type=http --target=gcp --port=$API_PORT",
-    "predeploy": "yarn build && yarn zip",
+    "pre?deploy": "yarn build && yarn zip",
     "deploy": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/bin/deploy.ts",
     "ping": "DOTENV_CONFIG_PATH=../../.env ts-node -r dotenv/config src/bin/ping.ts",
     "test": "jest --watchAll",
     "test-ci": "jest",
-    "zip": "cd dist && zip ../api.zip *.js && cd .. && zip -ur api.zip node_modules"
+    "prezip": "touch api.zip && rm api.zip",
+    "zip": "cd dist && zip ../api.zip *.js && cd .. && zip -u api.zip package.json && zip -ur api.zip node_modules"
   },
   "devDependencies": {
     "@types/jest": "^24.0.12",
