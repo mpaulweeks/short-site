@@ -1,4 +1,4 @@
-import { VideoQuery, Database } from 'short-site-utils';
+import { VideoQuery, Database } from 'short-site-api';
 import React, { ChangeEvent } from 'react';
 import { Cookies } from 'react-cookie';
 import styled from 'styled-components';

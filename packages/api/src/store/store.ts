@@ -1,7 +1,7 @@
 import { Bucket, Storage } from '@google-cloud/storage';
 import fs from 'fs';
 import fetch from 'node-fetch';
-import { Database, Favorites } from 'short-site-utils';
+import { Database, Favorites } from '../utils';
 
 export class Store {
   dbFilename = 'db.json';

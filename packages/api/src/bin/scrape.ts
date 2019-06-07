@@ -1,8 +1,6 @@
-import { asyncMap, notEmpty, Video } from 'short-site-utils';
 import uuidv4 from 'uuid/v4';
-import { scrapeAmy } from '../amy';
-import { Store } from '../store';
-import { VimeoClient } from '../vimeoClient';
+import { scrapeAmy, Store, VimeoClient } from '../store';
+import { asyncMap, notEmpty, Video } from '../utils';
 
 function newId(): string {
   return uuidv4();

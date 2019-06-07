@@ -1,4 +1,4 @@
-import { Database } from 'short-site-utils';
+import { Database } from 'short-site-api';
 import React from 'react';
 import { withCookies, Cookies } from 'react-cookie';
 import styled from 'styled-components';

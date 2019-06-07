@@ -13,7 +13,7 @@
     "react-cookie": "^4.0.0",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
-    "short-site-utils": "0.1.0",
+    "short-site-api": "0.1.0",
     "styled-components": "^4.2.0",
     "typescript": "^3.4.5"
   },

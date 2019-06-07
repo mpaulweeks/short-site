@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Video } from 'short-site-utils';
+import { Video } from 'short-site-api';
 import { Api } from '../api';
 import { User } from '../user';
 import { FlexColumnMixin, AnimateShake } from './common';
